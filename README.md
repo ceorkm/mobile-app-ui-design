@@ -69,9 +69,9 @@ Great mobile UI isn't about flashiness — it's about intentionality. Every pixe
 ```bash
 mkdir -p ~/.claude/skills/mobile-app-ui-design
 cd ~/.claude/skills/mobile-app-ui-design
-curl -O https://raw.githubusercontent.com/YOUR_USERNAME/mobile-app-ui-design/main/SKILL.md
-curl -O https://raw.githubusercontent.com/YOUR_USERNAME/mobile-app-ui-design/main/industry-conventions.md
-curl -O https://raw.githubusercontent.com/YOUR_USERNAME/mobile-app-ui-design/main/INDEX.md
+curl -O https://raw.githubusercontent.com/ceorkm/mobile-app-ui-design/main/SKILL.md
+curl -O https://raw.githubusercontent.com/ceorkm/mobile-app-ui-design/main/industry-conventions.md
+curl -O https://raw.githubusercontent.com/ceorkm/mobile-app-ui-design/main/INDEX.md
 ```
 
 ## What's Included
@@ -126,4 +126,4 @@ Design principles compiled from industry best practices, research papers, and ca
 
 ---
 
-**Made for Claude Code** • [Report Issues](https://github.com/YOUR_USERNAME/mobile-app-ui-design/issues)
+**Made for Claude Code** • [Report Issues](https://github.com/ceorkm/mobile-app-ui-design/issues)
