@@ -6,10 +6,12 @@ This repository contains a comprehensive mobile app UI/UX design skill and refer
 ## File Structure
 
 ```
-/Users/femi/Downloads/files-2 2/
-├── INDEX.md                      # This file
+mobile-app-ui-design/
 ├── SKILL.md                      # Mobile App UI/UX Design Skill Guide
-└── industry-conventions.md       # Industry-Specific Design Reference
+├── references/
+│   └── industry-conventions.md   # Industry-Specific Design Reference
+├── INDEX.md                      # This file
+└── README.md                     # Documentation & Installation
 ```
 
 ---
@@ -47,7 +49,7 @@ A comprehensive guide for designing high-quality mobile app interfaces following
 
 ---
 
-## industry-conventions.md
+## references/industry-conventions.md
 **Industry Conventions & Emotional Design Reference**
 
 Deep dive into industry-specific design languages and psychological principles for emotional design.

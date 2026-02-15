@@ -53,25 +53,27 @@ Great mobile UI isn't about flashiness — it's about intentionality. Every pixe
 ```
 .
 ├── SKILL.md                      # Main skill guide
-├── industry-conventions.md       # Industry-specific patterns & emotional design
+├── references/
+│   └── industry-conventions.md   # Industry-specific patterns & emotional design
 ├── INDEX.md                      # Navigation & quick reference
 └── README.md                     # This file
 ```
 
 ## Installation
 
-### Option 1: Manual Installation
+### Quick Install (Recommended)
+```bash
+npx skills add ceorkm/mobile-app-ui-design
+```
+
+### Manual Installation
 1. Clone this repository
 2. Copy files to `~/.claude/skills/mobile-app-ui-design/`
 3. Restart Claude Code
 
-### Option 2: Direct Download
+### Direct Download
 ```bash
-mkdir -p ~/.claude/skills/mobile-app-ui-design
-cd ~/.claude/skills/mobile-app-ui-design
-curl -O https://raw.githubusercontent.com/ceorkm/mobile-app-ui-design/main/SKILL.md
-curl -O https://raw.githubusercontent.com/ceorkm/mobile-app-ui-design/main/industry-conventions.md
-curl -O https://raw.githubusercontent.com/ceorkm/mobile-app-ui-design/main/INDEX.md
+npx skills add ceorkm/mobile-app-ui-design
 ```
 
 ## What's Included
