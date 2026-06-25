@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mobile App UI Showcase — 5 apps, screen by screen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     GLOBAL FOUNDATION
+     - 8-point grid spacing
+     - One primary font (Inter), mono for numbers
+     - Soft, tinted shadows
+     ============================================================ */
+  :root {
+    --r-sm: 12px; --r-md: 20px; --r-lg: 28px; --r-xl: 36px;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --display: 'Space Grotesk', var(--font);
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font);
+    background:
+      radial-gradient(1200px 600px at 15% -5%, #1a1140 0%, transparent 55%),
+      radial-gradient(1000px 500px at 95% 10%, #0a2a3a 0%, transparent 50%),
+      #0b0b12;
+    color: #e9e9f2;
+    padding: 0 0 120px;
+    overflow-x: hidden;
+  }
+
+  /* ---------- Page header ---------- */
+  .hero { max-width: 1180px; margin: 0 auto; padding: 80px 24px 24px; text-align: center; }
+  .hero .kicker {
+    display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: 0.18em;
+    text-transform: uppercase; color: #8b8ba7;
+    border: 1px solid rgba(255,255,255,0.12); border-radius: 999px;
+    padding: 8px 16px; margin-bottom: 24px; backdrop-filter: blur(8px);
+  }
+  .hero h1 {
+    font-family: var(--display); font-size: 52px; font-weight: 700; line-height: 1.05;
+    letter-spacing: -0.02em; margin-bottom: 16px;
+    background: linear-gradient(180deg, #ffffff 0%, #b9b9d6 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero p { font-size: 17px; line-height: 1.6; color: #9a9ab5; max-width: 620px; margin: 0 auto; }
+  .hero .legend { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 28px; }
+  .hero .legend span {
+    font-size: 12.5px; font-weight: 500; color: #c7c7de;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 999px; padding: 7px 14px;
+  }
+
+  /* ---------- App section ---------- */
+  .app-section { max-width: 1180px; margin: 0 auto; padding: 64px 24px 0; }
+  .app-head { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; flex-wrap: wrap; }
+  .app-badge {
+    width: 56px; height: 56px; border-radius: 16px; display: grid; place-items: center;
+    font-size: 28px; flex-shrink: 0; box-shadow: 0 12px 28px -10px rgba(0,0,0,0.6);
+  }
+  .app-head h2 { font-family: var(--display); font-size: 30px; font-weight: 700; letter-spacing: -0.01em; }
+  .app-head .tag { font-size: 13px; font-weight: 600; color: #8b8ba7; letter-spacing: 0.02em; }
+  .app-desc { font-size: 15px; line-height: 1.6; color: #9a9ab5; max-width: 720px; margin: 14px 0 4px; }
+  .app-desc b { color: #d6d6ea; font-weight: 600; }
+
+  /* ---------- Phone row (horizontal scroll on mobile) ---------- */
+  .phone-row {
+    display: flex; gap: 32px; padding: 36px 4px 8px; overflow-x: auto;
+    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+  }
+  .phone-row::-webkit-scrollbar { height: 8px; }
+  .phone-row::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 8px; }
+  .phone-wrap { scroll-snap-align: center; flex-shrink: 0; }
+  .phone-label { text-align: center; font-size: 13px; font-weight: 600; color: #9a9ab5; margin-top: 16px; }
+  .phone-label .num {
+    display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 6px;
+    background: rgba(255,255,255,0.08); font-size: 11px; margin-right: 6px; color: #c7c7de;
+    font-family: var(--mono); vertical-align: middle;
+  }
+
+  /* ---------- The phone frame ---------- */
+  .phone {
+    position: relative; width: 320px; height: 680px; border-radius: 44px;
+    padding: 10px; background: linear-gradient(160deg, #2a2a38, #16161e);
+    box-shadow: 0 50px 90px -40px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.05) inset;
+  }
+  .screen {
+    position: relative; width: 100%; height: 100%; border-radius: 36px; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  /* notch */
+  .phone::after {
+    content: ""; position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+    width: 110px; height: 28px; background: #0b0b12; border-radius: 999px; z-index: 50;
+  }
+  .statusbar {
+    position: relative; z-index: 40; display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 26px 8px; font-size: 13px; font-weight: 600; flex-shrink: 0;
+  }
+  .statusbar .dots { display: flex; gap: 5px; align-items: center; }
+  .statusbar .dots b { font-family: var(--mono); font-size: 12px; }
+  .scr-body { flex: 1; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+
+  /* reusable bits */
+  .pad { padding: 8px 22px 0; }
+  .row { display: flex; align-items: center; }
+  .between { justify-content: space-between; }
+  .grow { flex: 1; }
+  .pill {
+    border-radius: 999px; padding: 8px 14px; font-size: 12.5px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .avatar { border-radius: 999px; object-fit: cover; display: grid; place-items: center; font-weight: 700; }
+  .nav {
+    margin-top: auto; flex-shrink: 0; display: flex; justify-content: space-around; align-items: center;
+    padding: 14px 18px 24px;
+  }
+  .nav .ni { display: grid; place-items: center; gap: 4px; font-size: 10px; font-weight: 600; opacity: 0.45; }
+  .nav .ni.on { opacity: 1; }
+  .nav svg { width: 22px; height: 22px; }
+  .cta {
+    border: none; border-radius: var(--r-md); padding: 17px; width: 100%; font-family: var(--font);
+    font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center;
+    justify-content: center; gap: 8px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
+  }
+  svg { display: block; }
+  .ic { width: 20px; height: 20px; stroke-width: 2; }
+
+  @media (max-width: 760px) {
+    .hero h1 { font-size: 36px; }
+    .hero { padding-top: 56px; }
+    .app-section { padding-top: 48px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================ HERO ============================ -->
+<header class="hero">
+  <span class="kicker">Mobile App UI/UX Design Skill · Stress Test</span>
+  <h1>Five apps.<br/>Screen by screen.</h1>
+  <p>One design system of principles, five completely different industries. Each screen applies the 60/30/10 color rule, an 8-point spacing grid, thumb-zone actions, and peak-end emotional moments — and proves the skill holds across light &amp; dark, calm &amp; energetic, conservative &amp; playful.</p>
+  <div class="legend">
+    <span>🏦 Finance</span><span>🪙 Crypto</span><span>⚡ Fitness</span><span>🌙 Meditation</span><span>🌱 Learning</span>
+  </div>
+</header>
+
+<!-- ============================================================
+     APP 1 — NOVA · FINANCE / BANKING
+     Light, blue trust palette, tactile card. 60% white / 30% ink / 10% blue.
+     ============================================================ -->
+<section class="app-section">
+  <div class="app-head">
+    <div class="app-badge" style="background:linear-gradient(150deg,#3b6ef6,#1e40af);">🏦</div>
+    <div>
+      <h2>Nova</h2>
+      <div class="tag">FINANCE · BANKING — trust, clarity, tactile</div>
+    </div>
+  </div>
+  <p class="app-desc">Blue-dominant for <b>trust and stability</b>, generous white space, conservative type. The card screen turns a basic feature into a premium one with a <b>tactile 3D card</b> and a freeze toggle (Revolut lesson). Numbers use a monospace face so balances stay legible and aligned.</p>
+
+  <div class="phone-row">
+
+    <!-- 1.1 Dashboard -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" style="background:#f5f7fb;color:#0d1b2a;">
+        <div class="statusbar" style="color:#0d1b2a;"><span class="num">9:41</span><span class="dots">📶 🔋</span></div>
+        <div class="scr-body">
+          <div class="pad row between" style="margin-top:6px;">
+            <div class="row" style="gap:11px;">
+              <div class="avatar" style="width:42px;height:42px;background:#dbe6ff;color:#1e40af;">A</div>
+              <div><div style="font-size:12px;color:#5b6b82;font-weight:500;">Good morning</div>
+              <div style="font-size:15px;font-weight:700;">Alex Rivera</div></div>
+            </div>
+            <div style="width:40px;height:40px;border-radius:999px;background:#fff;display:grid;place-items:center;box-shadow:0 6px 16px -8px rgba(30,64,175,.35);">🔔</div>
+          </div>
+
+          <!-- balance card -->
+          <div class="pad" style="margin-top:18px;">
+            <div style="background:linear-gradient(155deg,#3b6ef6,#1e3a8a);border-radius:var(--r-lg);padding:24px;color:#fff;box-shadow:0 24px 40px -22px rgba(30,64,175,.85);">
+              <div style="font-size:13px;opacity:.8;font-weight:500;">Total balance</div>
+              <div class="num" style="font-size:38px;font-weight:700;margin-top:6px;letter-spacing:-.03em;">$24,580<span style="opacity:.6;font-size:24px;">.20</span></div>
+              <div class="row between" style="margin-top:18px;">
+                <span class="pill" style="background:rgba(255,255,255,.18);color:#fff;">↗ +$1,240 this week</span>
+                <span class="num" style="font-size:13px;opacity:.85;">•••• 4291</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- quick actions -->
+          <div class="pad row between" style="margin-top:22px;">
+            <div style="text-align:center;flex:1;"><div style="width:52px;height:52px;margin:0 auto 8px;border-radius:16px;background:#fff;display:grid;place-items:center;font-size:20px;box-shadow:0 8px 18px -10px rgba(30,64,175,.4);">↑</div><div style="font-size:11.5px;font-weight:600;">Send</div></div>
+            <div style="text-align:center;flex:1;"><div style="width:52px;height:52px;margin:0 auto 8px;border-radius:16px;background:#fff;display:grid;place-items:center;font-size:20px;box-shadow:0 8px 18px -10px rgba(30,64,175,.4);">↓</div><div style="font-size:11.5px;font-weight:600;">Request</div></div>
+            <div style="text-align:center;flex:1;"><div style="width:52px;height:52px;margin:0 auto 8px;border-radius:16px;background:#fff;display:grid;place-items:center;font-size:20px;box-shadow:0 8px 18px -10px rgba(30,64,175,.4);">⇄</div><div style="font-size:11.5px;font-weight:600;">Swap</div></div>
+            <div style="text-align:center;flex:1;"><div style="width:52px;height:52px;margin:0 auto 8px;border-radius:16px;background:#fff;display:grid;place-items:center;font-size:20px;box-shadow:0 8px 18px -10px rgba(30,64,175,.4);">＋</div><div style="font-size:11.5px;font-weight:600;">Top up</div></div>
+          </div>
+
+          <!-- transactions -->
+          <div class="pad" style="margin-top:24px;">
+            <div class="row between" style="margin-bottom:12px;"><span style="font-size:15px;font-weight:700;">Transactions</span><span style="font-size:12.5px;color:#3b6ef6;font-weight:600;">See all</span></div>
+            <div class="row between" style="margin-bottom:14px;"><div class="row" style="gap:11px;"><div style="width:38px;height:38px;border-radius:11px;background:#e8f7ee;display:grid;place-items:center;">🛒</div><div><div style="font-size:13.5px;font-weight:600;">Whole Foods</div><div style="font-size:11.5px;color:#5b6b82;">Groceries · Today</div></div></div><span class="num" style="font-weight:700;font-size:14px;">-$64.20</span></div>
+            <div class="row between" style="margin-bottom:14px;"><div class="row" style="gap:11px;"><div style="width:38px;height:38px;border-radius:11px;background:#eef0ff;display:grid;place-items:center;">💸</div><div><div style="font-size:13.5px;font-weight:600;">From Jordan</div><div style="font-size:11.5px;color:#5b6b82;">Transfer · Yesterday</div></div></div><span class="num" style="font-weight:700;font-size:14px;color:#16a34a;">+$320.00</span></div>
+            <div class="row between"><div class="row" style="gap:11px;"><div style="width:38px;height:38px;border-radius:11px;background:#fff0e8;display:grid;place-items:center;">☕</div><div><div style="font-size:13.5px;font-weight:600;">Blue Bottle</div><div style="font-size:11.5px;color:#5b6b82;">Coffee · Yesterday</div></div></div><span class="num" style="font-weight:700;font-size:14px;">-$6.50</span></div>
+          </div>
+        </div>
+        <div class="nav" style="background:#fff;border-top:1px solid #eef1f6;">
+          <div class="ni on" style="color:#3b6ef6;"><span style="font-size:20px;">⌂</span>Home</div>
+          <div class="ni"><span style="font-size:20px;">📊</span>Stats</div>
+          <div class="ni"><span style="font-size:20px;">💳</span>Cards</div>
+          <div class="ni"><span style="font-size:20px;">⚙</span>More</div>
+        </div>
+      </div></div>
+      <div class="phone-label"><span class="num">1.1</span>Dashboard</div>
+    </div>
+
+    <!-- 1.2 Card detail -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" style="background:#f5f7fb;color:#0d1b2a;">
+        <div class="statusbar" style="color:#0d1b2a;"><span class="num">9:41</span><span class="dots">📶 🔋</span></div>
+        <div class="scr-body">
+          <div class="pad row between" style="margin-top:6px;"><span style="font-size:20px;">‹</span><span style="font-size:16px;font-weight:700;">My Card</span><span style="font-size:18px;">⋯</span></div>
+
+          <!-- tactile 3D card -->
+          <div class="pad" style="margin-top:24px;perspective:900px;">
+            <div style="transform:rotateX(6deg) rotateY(-9deg);border-radius:24px;padding:24px;height:200px;color:#fff;
+              background:linear-gradient(135deg,#1e3a8a 0%,#3b6ef6 55%,#60a5fa 100%);
+              box-shadow:0 40px 60px -28px rgba(30,64,175,.9), inset 0 1px 0 rgba(255,255,255,.35);
+              display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;">
+              <div style="position:absolute;top:-40px;right:-30px;width:180px;height:180px;border-radius:999px;background:rgba(255,255,255,.12);"></div>
+              <div class="row between"><span style="font-weight:700;letter-spacing:.04em;">NOVA</span><span style="font-size:22px;">≋</span></div>
+              <div class="num" style="font-size:20px;letter-spacing:.12em;">4291 •••• •••• 8842</div>
+              <div class="row between"><div><div style="font-size:9px;opacity:.7;">CARD HOLDER</div><div style="font-size:12px;font-weight:600;">ALEX RIVERA</div></div><div style="font-size:26px;">💳</div></div>
+            </div>
+          </div>
+
+          <!-- freeze toggle -->
+          <div class="pad" style="margin-top:26px;">
+            <div class="row between" style="background:#fff;border-radius:var(--r-md);padding:16px 18px;box-shadow:0 10px 24px -16px rgba(30,64,175,.4);">
+              <div class="row" style="gap:12px;"><div style="width:40px;height:40px;border-radius:12px;background:#e8efff;display:grid;place-items:center;font-size:18px;">❄️</div><div><div style="font-size:14px;font-weight:700;">Freeze card</div><div style="font-size:11.5px;color:#5b6b82;">Instantly block all spending</div></div></div>
+              <div style="width:48px;height:28px;border-radius:999px;background:#3b6ef6;position:relative;"><div style="position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:999px;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.2);"></div></div>
+            </div>
+          </div>
+
+          <!-- spending -->
+          <div class="pad" style="margin-top:18px;">
+            <div style="background:#fff;border-radius:var(--r-md);padding:20px;box-shadow:0 10px 24px -16px rgba(30,64,175,.4);">
+              <div class="row between"><span style="font-size:13px;color:#5b6b82;font-weight:600;">Spent this month</span><span style="font-size:12px;color:#3b6ef6;font-weight:600;">Limit $3,000</span></div>
+              <div class="num" style="font-size:30px;font-weight:700;margin:8px 0 14px;">$1,840<span style="color:#9aa7bd;font-size:18px;">.00</span></div>
+              <div style="height:10px;border-radius:999px;background:#eef1f6;overflow:hidden;"><div style="width:61%;height:100%;border-radius:999px;background:linear-gradient(90deg,#3b6ef6,#60a5fa);"></div></div>
+              <div style="font-size:11.5px;color:#5b6b82;margin-top:8px;">61% of monthly limit used</div>
+            </div>
+          </div>
+        </div>
+        <div class="pad" style="padding-bottom:22px;margin-top:10px;"><button class="cta" style="background:#3b6ef6;color:#fff;">Card settings</button></div>
+      </div></div>
+      <div class="phone-label"><span class="num">1.2</span>Card · 3D &amp; freeze</div>
+    </div>
+
+    <!-- 1.3 Send keypad -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" style="background:#0d1b2a;color:#fff;">
+        <div class="statusbar" style="color:#fff;"><span class="num">9:41</span><span class="dots">📶 🔋</span></div>
+        <div class="scr-body">
+          <div class="pad row between" style="margin-top:6px;"><span style="font-size:20px;">✕</span><span style="font-size:16px;font-weight:700;">Send money</span><span style="width:20px;"></span></div>
+
+          <!-- recipient -->
+          <div class="pad" style="margin-top:20px;"><div class="row" style="gap:12px;background:rgba(255,255,255,.06);border-radius:999px;padding:8px 14px 8px 8px;width:fit-content;margin:0 auto;">
+            <div class="avatar" style="width:34px;height:34px;background:#3b6ef6;color:#fff;font-size:14px;">JL</div>
+            <div><div style="font-size:13px;font-weight:600;">Jordan Lee</div><div style="font-size:11px;opacity:.6;">@jordanlee</div></div>
+          </div></div>
+
+          <!-- amount -->
+          <div style="text-align:center;margin-top:34px;">
+            <div class="num" style="font-size:60px;font-weight:700;letter-spacing:-.04em;">$240<span style="opacity:.35;">.00</span></div>
+            <div style="font-size:13px;opacity:.55;margin-top:6px;">Balance $24,580.20</div>
+            <div class="row" style="gap:8px;justify-content:center;margin-top:16px;">
+              <span class="pill" style="background:rgba(59,110,246,.18);color:#7aa5ff;">$50</span>
+              <span class="pill" style="background:rgba(59,110,246,.18);color:#7aa5ff;">$100</span>
+              <span class="pill" style="background:rgba(59,110,246,.35);color:#fff;">$240</span>
+              <span class="pill" style="background:rgba(59,110,246,.18);color:#7aa5ff;">Max</span>
+            </div>
+          </div>
+
+          <!-- keypad -->
+          <div class="pad" style="margin-top:auto;">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;text-align:center;font-size:24px;font-weight:600;font-family:var(--mono);">
+              <div style="padding:14px;">1</div><div style="padding:14px;">2</div><div style="padding:14px;">3</div>
+              <div style="padding:14px;">4</div><div style="padding:14px;">5</div><div style="padding:14px;">6</div>
+              <div style="padding:14px;">7</div><div style="padding:14px;">8</div><div style="padding:14px;">9</div>
+              <div style="padding:14px;opacity:.5;">.</div><div style="padding:14px;">0</div><div style="padding:14px;opacity:.7;">⌫</div>
+            </div>
+          </div>
+          <div class="pad" style="padding-bottom:22px;"><button class="cta" style="background:#3b6ef6;color:#fff;">Send $240.00 →</button></div>
+        </div>
+      </div></div>
+      <div class="phone-label"><span class="num">1.3</span>Send · keypad</div>
+    </div>
+
+    <!-- 1.4 Insights -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" style="background:#f5f7fb;color:#0d1b2a;">
+        <div class="statusbar" style="color:#0d1b2a;"><span class="num">9:41</span><span class="dots">📶 🔋</span></div>
+        <div class="scr-body">
+          <div class="pad" style="margin-top:6px;"><div style="font-size:22px;font-weight:700;">Insights</div><div style="font-size:13px;color:#5b6b82;">June 2026</div></div>
+
+          <!-- bar chart -->
+          <div class="pad" style="margin-top:18px;"><div style="background:#fff;border-radius:var(--r-md);padding:20px;box-shadow:0 10px 24px -16px rgba(30,64,175,.4);">
+            <div class="row between"><span style="font-size:13px;color:#5b6b82;font-weight:600;">Weekly spend</span><span class="num" style="font-size:13px;font-weight:700;color:#16a34a;">↓ 12%</span></div>
+            <div class="row" style="align-items:flex-end;gap:10px;height:120px;margin-top:18px;">
+              <div class="grow" style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:100%;height:46%;background:#dbe6ff;border-radius:8px 8px 4px 4px;"></div><span style="font-size:10px;color:#9aa7bd;">M</span></div>
+              <div class="grow" style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:100%;height:70%;background:#dbe6ff;border-radius:8px 8px 4px 4px;"></div><span style="font-size:10px;color:#9aa7bd;">T</span></div>
+              <div class="grow" style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:100%;height:34%;background:#dbe6ff;border-radius:8px 8px 4px 4px;"></div><span style="font-size:10px;color:#9aa7bd;">W</span></div>
+              <div class="grow" style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:100%;height:88%;background:linear-gradient(180deg,#3b6ef6,#60a5fa);border-radius:8px 8px 4px 4px;"></div><span style="font-size:10px;color:#3b6ef6;font-weight:700;">T</span></div>
+              <div class="grow" style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:100%;height:58%;background:#dbe6ff;border-radius:8px 8px 4px 4px;"></div><span style="font-size:10px;color:#9aa7bd;">F</span></div>
+              <div class="grow" style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:100%;height:42%;background:#dbe6ff;border-radius:8px 8px 4px 4px;"></div><span style="font-size:10px;color:#9aa7bd;">S</span></div>
+              <div class="grow" style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div style="width:100%;height:28%;background:#dbe6ff;border-radius:8px 8px 4px 4px;"></div><span style="font-size:10px;color:#9aa7bd;">S</span></div>
+            </div>
+          </div></div>
+
+          <!-- categories -->
+          <div class="pad" style="margin-top:20px;">
+            <div style="font-size:15px;font-weight:700;margin-bottom:12px;">Top categories</div>
+            <div style="background:#fff;border-radius:var(--r-md);padding:6px 18px;box-shadow:0 10px 24px -16px rgba(30,64,175,.4);">
+              <div class="row between" style="padding:13px 0;border-bottom:1px solid #f0f2f7;"><div class="row" style="gap:11px;"><div style="width:36px;height:36px;border-radius:10px;background:#e8f7ee;display:grid;place-items:center;">🛒</div><span style="font-size:13.5px;font-weight:600;">Groceries</span></div><span class="num" style="font-weight:700;font-size:13.5px;">$612</span></div>
+              <div class="row between" style="padding:13px 0;border-bottom:1px solid #f0f2f7;"><div class="row" style="gap:11px;"><div style="width:36px;height:36px;border-radius:10px;background:#fff0e8;display:grid;place-items:center;">🍽️</div><span style="font-size:13.5px;font-weight:600;">Dining</span></div><span class="num" style="font-weight:700;font-size:13.5px;">$428</span></div>
+              <div class="row between" style="padding:13px 0;"><div class="row" style="gap:11px;"><div style="width:36px;height:36px;border-radius:10px;background:#eef0ff;display:grid;place-items:center;">🚇</div><span style="font-size:13.5px;font-weight:600;">Transport</span></div><span class="num" style="font-weight:700;font-size:13.5px;">$184</span></div>
+            </div>
+          </div>
+
+          <!-- vanity-mirror insight (peak) -->
+          <div class="pad" style="margin-top:18px;"><div style="background:linear-gradient(135deg,#1e3a8a,#3b6ef6);border-radius:var(--r-md);padding:18px;color:#fff;box-shadow:0 16px 30px -18px rgba(30,64,175,.9);">
+            <div style="font-size:12px;opacity:.85;font-weight:600;margin-bottom:4px;">✨ YOUR MONEY PERSONALITY</div>
+            <div style="font-size:15px;font-weight:700;line-height:1.4;">You're a mindful saver — you spent 12% less than last month and grew savings 3 weeks straight.</div>
+          </div></div>
+        </div>
+      </div></div>
+      <div class="phone-label"><span class="num">1.4</span>Insights · peak</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     APP 2 — LUMEN · CRYPTO WALLET
+     Dark mode, neon accents. Polish builds trust (Phantom lesson).
+     ============================================================ -->
+<section class="app-section">
+  <div class="app-head">
+    <div class="app-badge" style="background:linear-gradient(150deg,#a855f7,#6d28d9);">🪙</div>
+    <div>
+      <h2>Lumen</h2>
+      <div class="tag">CRYPTO · WEB3 — futuristic, high-contrast, polished</div>
+    </div>
+  </div>
+  <p class="app-desc">Dark backgrounds with <b>neon violet &amp; mint</b> accents and bold typography. Every transition and sparkline is treated as a core feature, not fluff — because in crypto, <b>polish is the trust signal</b>. Glow effects sit behind key numbers; the accent green is reserved for gains only.</p>
+
+  <div class="phone-row">
+
+    <!-- 2.1 Portfolio -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" style="background:radial-gradient(120% 80% at 50% 0%,#231245 0%,#0c0816 60%);color:#f3effc;">
+        <div class="statusbar" style="color:#f3effc;"><span class="num">9:41</span><span class="dots">📶 🔋</span></div>
+        <div class="scr-body">
+          <div class="pad row between" style="margin-top:6px;">
+            <div class="row" style="gap:10px;"><div class="avatar" style="width:38px;height:38px;background:linear-gradient(135deg,#a855f7,#22d3ee);color:#fff;">◎</div><div><div style="font-size:11px;opacity:.6;">Main wallet</div><div class="num" style="font-size:13px;font-weight:600;">0x7a…4f2c</div></div></div>
+            <div style="width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.06);display:grid;place-items:center;">🔍</div>
+          </div>
+
+          <!-- total + glow -->
+          <div style="text-align:center;margin-top:30px;position:relative;">
+            <div style="position:absolute;width:200px;height:200px;left:50%;top:-30px;transform:translateX(-50%);background:radial-gradient(circle,#a855f7 0%,transparent 70%);opacity:.28;filter:blur(20px);"></div>
+            <div style="position:relative;"><div style="font-size:12px;opacity:.6;font-weight:500;letter-spacing:.04em;">PORTFOLIO VALUE</div>
+            <div class="num" style="font-size:44px;font-weight:700;margin-top:4px;letter-spacing:-.03em;">$48,219<span style="opacity:.4;font-size:26px;">.84</span></div>
+            <div class="pill" style="background:rgba(52,211,153,.16);color:#34d399;margin-top:8px;">▲ 8.4% · +$3,742 today</div></div>
+          </div>
+
+          <!-- actions -->
+          <div class="pad row" style="gap:10px;margin-top:26px;">
+            <div class="grow" style="text-align:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:14px 0;"><div style="font-size:18px;">↑</div><div style="font-size:11px;font-weight:600;margin-top:4px;">Send</div></div>
+            <div class="grow" style="text-align:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:14px 0;"><div style="font-size:18px;">↓</div><div style="font-size:11px;font-weight:600;margin-top:4px;">Receive</div></div>
+            <div class="grow" style="text-align:center;background:rgba(168,85,247,.18);border:1px solid rgba(168,85,247,.4);border-radius:16px;padding:14px 0;"><div style="font-size:18px;">⇄</div><div style="font-size:11px;font-weight:600;margin-top:4px;color:#c4a4ff;">Swap</div></div>
+            <div class="grow" style="text-align:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:14px 0;"><div style="font-size:18px;">＋</div><div style="font-size:11px;font-weight:600;margin-top:4px;">Buy</div></div>
+          </div>
+
+          <!-- token list with sparklines -->
+          <div class="pad" style="margin-top:24px;">
+            <div class="row between" style="margin-bottom:14px;"><span style="font-size:15px;font-weight:700;">Assets</span><span style="font-size:12px;opacity:.6;">4 tokens</span></div>
+
+            <div class="row between" style="margin-bottom:16px;"><div class="row" style="gap:11px;"><div style="width:40px;height:40px;border-radius:999px;background:#f7931a;display:grid;place-items:center;font-weight:700;">₿</div><div><div style="font-size:14px;font-weight:600;">Bitcoin</div><div class="num" style="font-size:11.5px;opacity:.55;">0.42 BTC</div></div></div>
+              <svg width="46" height="22" viewBox="0 0 46 22"><polyline points="0,16 10,12 18,15 26,6 34,9 46,2" fill="none" stroke="#34d399" stroke-width="2"/></svg>
+              <div style="text-align:right;"><div class="num" style="font-size:13.5px;font-weight:700;">$26,140</div><div class="num" style="font-size:11px;color:#34d399;">+5.2%</div></div></div>
+
+            <div class="row between" style="margin-bottom:16px;"><div class="row" style="gap:11px;"><div style="width:40px;height:40px;border-radius:999px;background:#627eea;display:grid;place-items:center;font-weight:700;">Ξ</div><div><div style="font-size:14px;font-weight:600;">Ethereum</div><div class="num" style="font-size:11.5px;opacity:.55;">6.1 ETH</div></div></div>
+              <svg width="46" height="22" viewBox="0 0 46 22"><polyline points="0,8 10,11 18,6 26,12 34,9 46,4" fill="none" stroke="#34d399" stroke-width="2"/></svg>
+              <div style="text-align:right;"><div class="num" style="font-size:13.5px;font-weight:700;">$18,920</div><div class="num" style="font-size:11px;color:#34d399;">+3.1%</div></div></div>
+
+            <div class="row between"><div class="row" style="gap:11px;"><div style="width:40px;height:40px;border-radius:999px;background:linear-gradient(135deg,#a855f7,#22d3ee);display:grid;place-items:center;font-weight:700;">◎</div><div><div style="font-size:14px;font-weight:600;">Solana</div><div class="num" style="font-size:11.5px;opacity:.55;">22 SOL</div></div></div>
+              <svg width="46" height="22" viewBox="0 0 46 22"><polyline points="0,6 10,9 18,7 26,13 34,15 46,18" fill="none" stroke="#fb7185" stroke-width="2"/></svg>
+              <div style="text-align:right;"><div class="num" style="font-size:13.5px;font-weight:700;">$3,159</div><div class="num" style="font-size:11px;color:#fb7185;">-1.8%</div></div></div>
+          </div>
+        </div>
+        <div class="nav" style="border-top:1px solid rgba(255,255,255,.06);">
+          <div class="ni on" style="color:#c4a4ff;"><span style="font-size:18px;">◈</span>Wallet</div>
+          <div class="ni"><span style="font-size:18px;">📈</span>Trade</div>
+          <div class="ni"><span style="font-size:18px;">🖼</span>NFTs</div>
+          <div class="ni"><span style="font-size:18px;">⚙</span>Settings</div>
+        </div>
+      </div></div>
+      <div class="phone-label"><span class="num">2.1</span>Portfolio</div>
+    </div>
+
+    <!-- 2.2 Token detail -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" style="background:radial-gradient(120% 70% at 50% 0%,#1a2a44 0%,#0c0816 60%);color:#f3effc;">
+        <div class="statusbar" style="color:#f3effc;"><span class="num">9:41</span><span class="dots">📶 🔋</span></div>
+        <div class="scr-body">
+          <div class="pad row between" style="margin-top:6px;"><span style="font-size:20px;">‹</span><div class="row" style="gap:8px;"><div style="width:26px;height:26px;border-radius:999px;background:#627eea;display:grid;place-items:center;font-size:13px;font-weight:700;">Ξ</div><span style="font-size:15px;font-weight:700;">Ethereum</span></div><span style="font-size:18px;">☆</span></div>
+
+          <div style="text-align:center;margin-top:24px;"><div class="num" style="font-size:40px;font-weight:700;letter-spacing:-.03em;">$3,101.20</div><div class="pill" style="background:rgba(52,211,153,.16);color:#34d399;margin-top:6px;">▲ 3.1% · 24h</div></div>
+
+          <!-- line chart -->
+          <div style="margin-top:24px;position:relative;height:160px;">
+            <svg width="100%" height="160" viewBox="0 0 320 160" preserveAspectRatio="none">
+              <defs><linearGradient id="eg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#34d399" stop-opacity="0.35"/><stop offset="100%" stop-color="#34d399" stop-opacity="0"/></linearGradient></defs>
+              <path d="M0,120 C40,90 60,110 90,80 C120,55 150,95 180,60 C210,30 250,70 290,35 L320,28 L320,160 L0,160 Z" fill="url(#eg)"/>
+              <path d="M0,120 C40,90 60,110 90,80 C120,55 150,95 180,60 C210,30 250,70 290,35 L320,28" fill="none" stroke="#34d399" stroke-width="2.5"/>
+              <circle cx="320" cy="28" r="4" fill="#34d399"/>
+            </svg>
+          </div>
+          <div class="pad row" style="gap:8px;justify-content:center;margin-top:10px;">
+            <span class="pill" style="background:rgba(255,255,255,.05);">1H</span>
+            <span class="pill" style="background:rgba(168,85,247,.3);color:#fff;">1D</span>
+            <span class="pill" style="background:rgba(255,255,255,.05);">1W</span>
+            <span class="pill" style="background:rgba(255,255,255,.05);">1M</span>
+            <span class="pill" style="background:rgba(255,255,255,.05);">1Y</span>
+          </div>
+
+          <!-- stats -->
+          <div class="pad" style="margin-top:22px;"><div class="row between" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:var(--r-md);padding:16px 18px;">
+            <div><div style="font-size:11px;opacity:.55;">Your holdings</div><div class="num" style="font-size:16px;font-weight:700;margin-top:2px;">6.1 ETH</div></div>
+            <div style="text-align:right;"><div style="font-size:11px;opacity:.55;">Value</div><div class="num" style="font-size:16px;font-weight:700;margin-top:2px;color:#34d399;">$18,920</div></div>
+          </div></div>
+
+          <div class="pad row" style="gap:12px;margin-top:auto;padding-bottom:22px;">
+            <button class="cta" style="background:rgba(255,255,255,.08);color:#f3effc;border:1px solid rgba(255,255,255,.12);box-shadow:none;">Sell</button>
+            <button class="cta" style="background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;">Buy ETH</button>
+          </div>
+        </div>
+      </div></div>
+      <div class="phone-label"><span class="num">2.2</span>Token detail</div>
+    </div>
+
+    <!-- 2.3 Swap -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" style="background:radial-gradient(120% 70% at 50% 0%,#231245 0%,#0c0816 60%);color:#f3effc;">
+        <div class="statusbar" style="color:#f3effc;"><span class="num">9:41</span><span class="dots">📶 🔋</span></div>
+        <div class="scr-body">
+          <div class="pad row between" style="margin-top:6px;"><span style="font-size:20px;">‹</span><span style="font-size:16px;font-weight:700;">Swap</span><span style="font-size:18px;">⚙</span></div>
+
+          <!-- from -->
+          <div class="pad" style="margin-top:24px;"><div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--r-md);padding:18px;">
+            <div class="row between"><span style="font-size:12px;opacity:.55;">You pay</span><span style="font-size:11px;opacity:.55;">Balance 0.42 BTC</span></div>
+            <div class="row between" style="margin-top:10px;"><div class="num" style="font-size:30px;font-weight:700;">0.15</div>
+              <div class="row pill" style="background:rgba(255,255,255,.07);gap:6px;"><span style="width:24px;height:24px;border-radius:999px;background:#f7931a;display:grid;place-items:center;font-size:12px;font-weight:700;">₿</span>BTC ▾</div></div>
+            <div style="font-size:12px;opacity:.5;margin-top:6px;" class="num">≈ $9,335.00</div>
+          </div></div>
+
+          <!-- swap button -->
+          <div style="text-align:center;margin:-14px 0;position:relative;z-index:5;"><div style="width:44px;height:44px;border-radius:14px;background:#a855f7;display:inline-grid;place-items:center;font-size:20px;box-shadow:0 10px 24px -8px rgba(168,85,247,.8);border:3px solid #0c0816;">⇅</div></div>
+
+          <!-- to -->
+          <div class="pad"><div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:var(--r-md);padding:18px;">
+            <div class="row between"><span style="font-size:12px;opacity:.55;">You receive</span><span style="font-size:11px;opacity:.55;">Balance 6.1 ETH</span></div>
+            <div class="row between" style="margin-top:10px;"><div class="num" style="font-size:30px;font-weight:700;color:#34d399;">3.01</div>
+              <div class="row pill" style="background:rgba(255,255,255,.07);gap:6px;"><span style="width:24px;height:24px;border-radius:999px;background:#627eea;display:grid;place-items:center;font-size:12px;font-weight:700;">Ξ</span>ETH ▾</div></div>
+            <div style="font-size:12px;opacity:.5;margin-top:6px;" class="num">≈ $9,330.00</div>
+          </div></div>
+
+          <!-- rate details -->
+          <div class="pad" style="margin-top:18px;"><div style="background:rgba(255,255,255,.03);border-radius:var(--r-md);padding:14px 18px;font-size:12.5px;">
+            <div class="row between" style="margin-bottom:8px;opacity:.7;"><span>Rate</span><span class="num">1 BTC = 20.06 ETH</span></div>
+            <div class="row between" style="margin-bottom:8px;opacity:.7;"><span>Network fee</span><span class="num">$2.40</span></div>
+            <div class="row between"><span style="opacity:.7;">Slippage</span><span class="num" style="color:#34d399;">0.5%</span></div>
+          </div></div>
+
+          <div class="pad" style="margin-top:auto;padding-bottom:22px;"><button class="cta" style="background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;">Review swap</button></div>
+        </div>
+      </div></div>
+      <div class="phone-label"><span class="num">2.3</span>Swap</div>
+    </div>
+
+    <!-- 2.4 Receive QR -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" style="background:radial-gradient(120% 70% at 50% 0%,#1a2a44 0%,#0c0816 60%);color:#f3effc;">
+        <div class="statusbar" style="color:#f3effc;"><span class="num">9:41</span><span class="dots">📶 🔋</span></div>
+        <div class="scr-body">
+          <div class="pad row between" style="margin-top:6px;"><span style="font-size:20px;">‹</span><span style="font-size:16px;font-weight:700;">Receive</span><span style="font-size:18px;">↗</span></div>
+
+          <div class="pad" style="margin-top:18px;"><div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:999px;padding:6px;display:flex;">
+            <div class="grow" style="text-align:center;padding:10px;border-radius:999px;background:rgba(168,85,247,.3);font-size:13px;font-weight:600;">Crypto</div>
+            <div class="grow" style="text-align:center;padding:10px;font-size:13px;font-weight:600;opacity:.55;">Cash</div>
+          </div></div>
+
+          <!-- QR -->
+          <div style="text-align:center;margin-top:30px;">
+            <div style="display:inline-block;background:#fff;border-radius:24px;padding:22px;box-shadow:0 30px 60px -28px rgba(168,85,247,.7);">
+              <svg width="170" height="170" viewBox="0 0 29 29" shape-rendering="crispEdges">
+                <rect width="29" height="29" fill="#fff"/>
+                <g fill="#0c0816">
+                  <rect x="0" y="0" width="7" height="7"/><rect x="2" y="2" width="3" height="3" fill="#fff"/><rect x="22" y="0" width="7" height="7"/><rect x="24" y="2" width="3" height="3" fill="#fff"/><rect x="0" y="22" width="7" height="7"/><rect x="2" y="24" width="3" height="3" fill="#fff"/>
+                  <rect x="9" y="1" width="1" height="1"/><rect x="11" y="0" width="1" height="2"/><rect x="13" y="1" width="2" height="1"/><rect x="16" y="0" width="1" height="1"/><rect x="19" y="1" width="1" height="1"/>
+                  <rect x="9" y="9" width="3" height="1"/><rect x="13" y="9" width="1" height="3"/><rect x="16" y="10" width="2" height="2"/><rect x="20" y="9" width="1" height="2"/><rect x="23" y="10" width="2" height="1"/><rect x="26" y="9" width="1" height="2"/>
+                  <rect x="9" y="13" width="2" height="1"/><rect x="14" y="14" width="2" height="2"/><rect x="18" y="13" width="1" height="2"/><rect x="21" y="14" width="2" height="1"/><rect x="25" y="13" width="1" height="2"/>
+                  <rect x="10" y="17" width="1" height="2"/><rect x="13" y="18" width="2" height="1"/><rect x="17" y="17" width="2" height="2"/><rect x="21" y="18" width="1" height="1"/><rect x="24" y="17" width="2" height="2"/>
+                  <rect x="9" y="21" width="2" height="2"/><rect x="13" y="22" width="1" height="2"/><rect x="16" y="21" width="2" height="1"/><rect x="19" y="22" width="2" height="2"/><rect x="23" y="21" width="1" height="3"/><rect x="26" y="22" width="1" height="2"/>
+                  <rect x="9" y="25" width="3" height="1"/><rect x="14" y="26" width="2" height="1"/><rect x="18" y="25" width="1" height="2"/><rect x="22" y="26" width="2" height="1"/><rect x="26" y="25" width="1" height="2"/>
+                </g>
+                <rect x="12" y="12" width="5" height="5" rx="1" fill="#a855f7"/>
+              </svg>
+            </div>
+          </div>
+
+          <div style="text-align:center;margin-top:24px;"><div style="font-size:13px;opacity:.6;">Your ETH address</div>
+          <div class="num" style="font-size:14px;font-weight:600;margin-top:6px;background:rgba(255,255,255,.05);border-radius:12px;padding:12px 16px;display:inline-block;">0x7a9f…b3c4f2c</div></div>
+
+          <div class="pad row" style="gap:12px;margin-top:auto;padding-bottom:22px;">
+            <button class="cta" style="background:rgba(255,255,255,.08);color:#f3effc;border:1px solid rgba(255,255,255,.12);box-shadow:none;">📋 Copy</button>
+            <button class="cta" style="background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;">Share</button>
+          </div>
+        </div>
+      </div></div>
+      <div class="phone-label"><span class="num">2.4</span>Receive · QR</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     APP 3 — PULSE · FITNESS
+     Energetic light, bold lime accent, momentum. Adapts to user stage.
+     ============================================================ -->
+<section class="app-section">
+  <div class="app-head">
+    <div class="app-badge" style="background:linear-gradient(150deg,#84cc16,#16a34a);">⚡</div>
+    <div>
+      <h2>Pulse</h2>
+      <div class="tag">FITNESS — energetic, progress-focused, momentum</div>
+    </div>
+  </div>
+  <p class="app-desc">Bold type, energetic lime accent, and <b>visual momentum</b> everywhere — rings, streaks, progress bars with motion. The flow is built around a deliberate <b>peak-end moment</b>: finishing a workout triggers a celebratory summary that says who you are, not just what you did.</p>
+
+  <div class="phone-row">
+
+    <!-- 3.1 Home -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" style="background:#fbfdf7;color:#14210a;">
+        <div class="statusbar" style="color:#14210a;"><span class="num">9:41</span><span class="dots">📶 🔋</span></div>
+        <div class="scr-body">
+          <div class="pad row between" style="margin-top:6px;">
+            <div><div style="font-size:13px;color:#5e7345;font-weight:500;">Tuesday, Jun 25</div><div style="font-size:22px;font-weight:800;letter-spacing:-.02em;">Let's move, Sam 💪</div></div>
+            <div class="avatar" style="width:44px;height:44px;background:#dcf5b8;color:#3f6212;">S</div>
+          </div>
+
+          <!-- ring -->
+          <div class="pad" style="margin-top:20px;"><div style="background:#1a2e0c;border-radius:var(--r-lg);padding:24px;color:#fff;position:relative;overflow:hidden;box-shadow:0 24px 40px -24px rgba(26,46,12,.9);">
+            <div class="row between">
+              <div>
+                <div style="font-size:13px;opacity:.7;font-weight:500;">Today's goal</div>
+                <div class="num" style="font-size:34px;font-weight:800;margin-top:4px;">640<span style="font-size:18px;opacity:.6;"> / 800 kcal</span></div>
+                <div class="pill" style="background:rgba(132,204,22,.25);color:#bef264;margin-top:12px;">🔥 6-day streak</div>
+              </div>
+              <div style="position:relative;width:96px;height:96px;">
+                <svg width="96" height="96" viewBox="0 0 96 96"><circle cx="48" cy="48" r="40" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="10"/><circle cx="48" cy="48" r="40" fill="none" stroke="#84cc16" stroke-width="10" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="50" transform="rotate(-90 48 48)"/></svg>
+                <div style="position:absolute;inset:0;display:grid;place-items:center;font-weight:800;font-size:18px;" class="num">80%</div>
+              </div>
+            </div>
+          </div></div>
+
+          <!-- today's plan -->
+          <div class="pad" style="margin-top:24px;">
+            <div class="row between" style="margin-bottom:12px;"><span style="font-size:16px;font-weight:800;">Today's plan</span><span style="font-size:12.5px;color:#65a30d;font-weight:700;">Edit</span></div>
+
+            <div class="row between" style="background:#fff;border-radius:var(--r-md);padding:14px;margin-bottom:12px;box-shadow:0 10px 22px -16px rgba(26,46,12,.5);">
+              <div class="row" style="gap:12px;"><div style="width:48px;height:48px;border-radius:14px;background:#fef08a;display:grid;place-items:center;font-size:22px;">🏃</div><div><div style="font-size:14.5px;font-weight:700;">Morning Run</div><div style="font-size:12px;color:#5e7345;">5 km · 28 min</div></div></div>
+              <div style="width:30px;height:30px;border-radius:999px;background:#dcfce7;display:grid;place-items:center;color:#16a34a;font-weight:800;">✓</div>
+            </div>
+
+            <div class="row between" style="background:#fff;border-radius:var(--r-md);padding:14px;margin-bottom:12px;box-shadow:0 10px 22px -16px rgba(26,46,12,.5);">
+              <div class="row" style="gap:12px;"><div style="width:48px;height:48px;border-radius:14px;background:#dcf5b8;display:grid;place-items:center;font-size:22px;">🏋️</div><div><div style="font-size:14.5px;font-weight:700;">Upper Body</div><div style="font-size:12px;color:#5e7345;">8 exercises · 35 min</div></div></div>
+              <div style="width:30px;height:30px;border-radius:999px;background:#84cc16;display:grid;place-items:center;color:#fff;font-size:16px;">▶</div>
+            </div>
+
+            <div class="row between" style="background:#fff;border-radius:var(--r-md);padding:14px;box-shadow:0 10px 22px -16px rgba(26,46,12,.5);opacity:.65;">
+              <div class="row" style="gap:12px;"><div style="width:48px;height:48px;border-radius:14px;background:#e0e7ff;display:grid;place-items:center;font-size:22px;">🧘</div><div><div style="font-size:14.5px;font-weight:700;">Evening Stretch</div><div style="font-size:12px;color:#5e7345;">12 min · Recovery</div></div></div>
+              <span style="font-size:18px;color:#a3b18a;">›</span>
+            </div>
+          </div>
+        </div>
+        <div class="nav" style="background:#fff;border-top:1px solid #eef3e6;">
+          <div class="ni on" style="color:#65a30d;"><span style="font-size:20px;">⌂</span>Home</div>
+          <div class="ni"><span style="font-size:20px;">📋</span>Plans</div>
+          <div class="ni"><span style="font-size:20px;">📈</span>Progress</div>
+          <div class="ni"><span style="font-size:20px;">👤</span>Profile</div>
+        </div>
+      </div></div>
+      <div class="phone-label"><span class="num">3.1</span>Home · rings</div>
+    </div>
+
+    <!-- 3.2 Active workout -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" style="background:#14210a;color:#fff;">
+        <div class="statusbar" style="color:#fff;"><span class="num">9:41</span><span class="dots">📶 🔋</span></div>
+        <div class="scr-body">
+          <div class="pad row between" style="margin-top:6px;"><span style="font-size:20px;">✕</span><span class="pill" style="background:rgba(132,204,22,.2);color:#bef264;">Upper Body</span><span style="font-size:18px;">♪</span></div>
+
+          <div style="text-align:center;margin-top:22px;"><div style="font-size:13px;opacity:.6;font-weight:600;letter-spacing:.04em;">EXERCISE 3 OF 8</div><div style="font-size:26px;font-weight:800;margin-top:6px;">Dumbbell Press</div></div>
+
+          <!-- timer ring -->
+          <div style="text-align:center;margin-top:24px;position:relative;">
+            <div style="position:absolute;width:200px;height:200px;left:50%;top:-6px;transform:translateX(-50%);background:radial-gradient(circle,#84cc16 0%,transparent 70%);opacity:.25;filter:blur(20px);"></div>
+            <div style="position:relative;width:200px;height:200px;margin:0 auto;">
+              <svg width="200" height="200" viewBox="0 0 200 200"><circle cx="100" cy="100" r="86" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="12"/><circle cx="100" cy="100" r="86" fill="none" stroke="#84cc16" stroke-width="12" stroke-linecap="round" stroke-dasharray="540" stroke-dashoffset="160" transform="rotate(-90 100 100)"/></svg>
+              <div style="position:absolute;inset:0;display:grid;place-items:center;text-align:center;"><div><div class="num" style="font-size:48px;font-weight:800;">0:42</div><div style="font-size:12px;opacity:.6;">remaining</div></div></div>
+            </div>
+          </div>
+
+          <!-- reps -->
+          <div class="pad row" style="gap:12px;margin-top:24px;">
+            <div class="grow" style="text-align:center;background:rgba(255,255,255,.06);border-radius:16px;padding:14px;"><div class="num" style="font-size:24px;font-weight:800;">12</div><div style="font-size:11px;opacity:.6;margin-top:2px;">reps</div></div>
+            <div class="grow" style="text-align:center;background:rgba(255,255,255,.06);border-radius:16px;padding:14px;"><div class="num" style="font-size:24px;font-weight:800;">3</div><div style="font-size:11px;opacity:.6;margin-top:2px;">sets</div></div>
+            <div class="grow" style="text-align:center;background:rgba(255,255,255,.06);border-radius:16px;padding:14px;"><div class="num" style="font-size:24px;font-weight:800;">20<span style="font-size:13px;">kg</span></div><div style="font-size:11px;opacity:.6;margin-top:2px;">weight</div></div>
+          </div>
+
+          <div class="pad row" style="gap:12px;margin-top:auto;padding-bottom:22px;">
+            <button class="cta" style="background:rgba(255,255,255,.1);color:#fff;flex:0 0 84px;box-shadow:none;">⏸</button>
+            <button class="cta" style="background:#84cc16;color:#14210a;">Next exercise →</button>
+          </div>
+        </div>
+      </div></div>
+      <div class="phone-label"><span class="num">3.2</span>Active workout</div>
+    </div>
+
+    <!-- 3.3 CELEBRATION (peak) -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" style="background:linear-gradient(180deg,#65a30d 0%,#16a34a 100%);color:#fff;">
+        <div class="statusbar" style="color:#fff;"><span class="num">9:41</span><span class="dots">📶 🔋</span></div>
+        <div class="scr-body" style="text-align:center;">
+          <!-- confetti dots -->
+          <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">
+            <span style="position:absolute;top:8%;left:18%;font-size:18px;">✨</span>
+            <span style="position:absolute;top:14%;left:78%;font-size:14px;">🎉</span>
+            <span style="position:absolute;top:30%;left:8%;font-size:14px;">⭐</span>
+            <span style="position:absolute;top:24%;left:88%;font-size:16px;">✨</span>
+            <span style="position:absolute;top:42%;left:82%;font-size:12px;">💫</span>
+          </div>
+
+          <div style="margin-top:48px;position:relative;">
+            <div style="width:120px;height:120px;margin:0 auto;border-radius:999px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:58px;box-shadow:inset 0 2px 0 rgba(255,255,255,.4);">🏆</div>
+          </div>
+
+          <div style="margin-top:28px;"><div style="font-size:30px;font-weight:800;letter-spacing:-.02em;">Workout complete!</div>
+          <div style="font-size:15px;opacity:.85;margin-top:8px;max-width:240px;margin-left:auto;margin-right:auto;line-height:1.5;">You crushed Upper Body in 32 minutes. That's your 7th day in a row 🔥</div></div>
+
+          <!-- stats -->
+          <div class="pad" style="margin-top:30px;"><div class="row" style="gap:12px;">
+            <div class="grow" style="background:rgba(255,255,255,.15);border-radius:18px;padding:16px;"><div class="num" style="font-size:26px;font-weight:800;">412</div><div style="font-size:11px;opacity:.8;margin-top:2px;">kcal burned</div></div>
+            <div class="grow" style="background:rgba(255,255,255,.15);border-radius:18px;padding:16px;"><div class="num" style="font-size:26px;font-weight:800;">32:10</div><div style="font-size:11px;opacity:.8;margin-top:2px;">duration</div></div>
+            <div class="grow" style="background:rgba(255,255,255,.15);border-radius:18px;padding:16px;"><div class="num" style="font-size:26px;font-weight:800;">8</div><div style="font-size:11px;opacity:.8;margin-top:2px;">exercises</div></div>
+          </div></div>
+
+          <!-- vanity mirror identity statement -->
+          <div class="pad" style="margin-top:18px;"><div style="background:rgba(0,0,0,.18);border-radius:18px;padding:16px;text-align:left;">
+            <div style="font-size:11px;font-weight:700;opacity:.75;letter-spacing:.05em;">🌟 YOU'RE ON A ROLL</div>
+            <div style="font-size:14.5px;font-weight:700;line-height:1.4;margin-top:4px;">You're now in the top 8% of Pulse athletes this week.</div>
+          </div></div>
+
+          <div class="pad" style="margin-top:auto;padding-bottom:22px;"><button class="cta" style="background:#fff;color:#16803a;">Share my win ↗</button></div>
+        </div>
+      </div></div>
+      <div class="phone-label"><span class="num">3.3</span>Celebration · PEAK</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     APP 4 — DRIFT · MEDITATION / SLEEP
+     Calm purple & deep blue, minimal UI, soft low-contrast transitions.
+     ============================================================ -->
+<section class="app-section">
+  <div class="app-head">
+    <div class="app-badge" style="background:linear-gradient(150deg,#7c5cff,#3b2f80);">🌙</div>
+    <div>
+      <h2>Drift</h2>
+      <div class="tag">MEDITATION · SLEEP — calm, ambient, low-contrast</div>
+    </div>
+  </div>
+  <p class="app-desc">Purple and deep-blue tones for <b>calming associations</b>, generous breathing room, and deliberately <b>low-contrast, minimal UI</b> so nothing jolts the nervous system. The onboarding asks how you feel — a kind, non-intimidating first step (Ahead lesson).</p>
+
+  <div class="phone-row">
+
+    <!-- 4.1 Mood onboarding -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" style="background:linear-gradient(180deg,#1a1442 0%,#0f0b2e 100%);color:#e6e1ff;">
+        <div class="statusbar" style="color:#e6e1ff;"><span class="num">9:41</span><span class="dots">📶 🔋</span></div>
+        <div class="scr-body">
+          <div class="pad" style="margin-top:24px;"><div style="height:4px;border-radius:999px;background:rgba(255,255,255,.1);"><div style="width:33%;height:100%;border-radius:999px;background:#7c5cff;"></div></div>
+          <div style="font-size:12px;opacity:.5;margin-top:10px;">Step 1 of 3</div></div>
+
+          <div class="pad" style="margin-top:28px;"><div style="font-size:26px;font-weight:700;line-height:1.3;letter-spacing:-.01em;">How are you<br/>feeling tonight?</div>
+          <div style="font-size:14px;opacity:.6;margin-top:10px;line-height:1.5;">No wrong answers. We'll tailor a session just for you.</div></div>
+
+          <!-- mood grid -->
+          <div class="pad" style="margin-top:30px;"><div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div style="background:rgba(124,92,255,.18);border:1px solid rgba(124,92,255,.5);border-radius:20px;padding:22px 16px;text-align:center;"><div style="font-size:36px;">😣</div><div style="font-size:13.5px;font-weight:600;margin-top:10px;">Anxious</div></div>
+            <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:22px 16px;text-align:center;"><div style="font-size:36px;">😴</div><div style="font-size:13.5px;font-weight:600;margin-top:10px;">Restless</div></div>
+            <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:22px 16px;text-align:center;"><div style="font-size:36px;">😐</div><div style="font-size:13.5px;font-weight:600;margin-top:10px;">Just okay</div></div>
+            <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:22px 16px;text-align:center;"><div style="font-size:36px;">😌</div><div style="font-size:13.5px;font-weight:600;margin-top:10px;">Calm</div></div>
+          </div></div>
+
+          <div class="pad" style="margin-top:auto;padding-bottom:22px;"><button class="cta" style="background:#7c5cff;color:#fff;">Continue</button></div>
+        </div>
+      </div></div>
+      <div class="phone-label"><span class="num">4.1</span>Mood onboarding</div>
+    </div>
+
+    <!-- 4.2 Home -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" style="background:linear-gradient(180deg,#211a52 0%,#0f0b2e 70%);color:#e6e1ff;">
+        <div class="statusbar" style="color:#e6e1ff;"><span class="num">9:41</span><span class="dots">📶 🔋</span></div>
+        <div class="scr-body">
+          <div class="pad" style="margin-top:10px;"><div style="font-size:13px;opacity:.55;">Good evening, Maya 🌙</div><div style="font-size:24px;font-weight:700;margin-top:4px;letter-spacing:-.01em;">Let's unwind</div></div>
+
+          <!-- featured -->
+          <div class="pad" style="margin-top:18px;"><div style="border-radius:var(--r-lg);padding:24px;background:linear-gradient(135deg,#5b3fbf,#7c5cff);position:relative;overflow:hidden;box-shadow:0 24px 40px -24px rgba(124,92,255,.8);">
+            <div style="position:absolute;top:-30px;right:-20px;width:140px;height:140px;border-radius:999px;background:rgba(255,255,255,.12);"></div>
+            <span class="pill" style="background:rgba(255,255,255,.2);color:#fff;">✦ Tonight for you</span>
+            <div style="font-size:20px;font-weight:700;margin-top:14px;">Deep Sleep<br/>Wind-down</div>
+            <div style="font-size:13px;opacity:.85;margin-top:6px;">25 min · Calm your anxious mind</div>
+            <div style="width:46px;height:46px;border-radius:999px;background:#fff;color:#5b3fbf;display:grid;place-items:center;font-size:18px;margin-top:18px;box-shadow:0 8px 18px -6px rgba(0,0,0,.4);">▶</div>
+          </div></div>
+
+          <!-- categories -->
+          <div class="pad" style="margin-top:24px;"><div style="font-size:15px;font-weight:700;margin-bottom:14px;">Browse by mood</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div style="background:rgba(255,255,255,.05);border-radius:18px;padding:16px;"><div style="font-size:24px;">🌧️</div><div style="font-size:13.5px;font-weight:600;margin-top:10px;">Rain sounds</div><div style="font-size:11px;opacity:.5;">12 tracks</div></div>
+            <div style="background:rgba(255,255,255,.05);border-radius:18px;padding:16px;"><div style="font-size:24px;">📖</div><div style="font-size:13.5px;font-weight:600;margin-top:10px;">Sleep stories</div><div style="font-size:11px;opacity:.5;">40 stories</div></div>
+            <div style="background:rgba(255,255,255,.05);border-radius:18px;padding:16px;"><div style="font-size:24px;">🫁</div><div style="font-size:13.5px;font-weight:600;margin-top:10px;">Breathwork</div><div style="font-size:11px;opacity:.5;">8 exercises</div></div>
+            <div style="background:rgba(255,255,255,.05);border-radius:18px;padding:16px;"><div style="font-size:24px;">🎹</div><div style="font-size:13.5px;font-weight:600;margin-top:10px;">Focus music</div><div style="font-size:11px;opacity:.5;">30 tracks</div></div>
+          </div></div>
+        </div>
+        <div class="nav" style="border-top:1px solid rgba(255,255,255,.06);">
+          <div class="ni on" style="color:#b4a0ff;"><span style="font-size:18px;">🏠</span>Home</div>
+          <div class="ni"><span style="font-size:18px;">🔍</span>Explore</div>
+          <div class="ni"><span style="font-size:18px;">🌙</span>Sleep</div>
+          <div class="ni"><span style="font-size:18px;">👤</span>Me</div>
+        </div>
+      </div></div>
+      <div class="phone-label"><span class="num">4.2</span>Home</div>
+    </div>
+
+    <!-- 4.3 Breathing player -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" style="background:radial-gradient(120% 80% at 50% 40%,#3a2d7a 0%,#0f0b2e 70%);color:#e6e1ff;">
+        <div class="statusbar" style="color:#e6e1ff;"><span class="num">9:41</span><span class="dots">📶 🔋</span></div>
+        <div class="scr-body" style="text-align:center;">
+          <div class="pad row between" style="margin-top:6px;"><span style="font-size:20px;">⌄</span><span style="font-size:14px;font-weight:600;opacity:.8;">Breathwork</span><span style="font-size:18px;">⋯</span></div>
+
+          <div style="margin-top:30px;"><div style="font-size:22px;font-weight:700;">4-7-8 Breathing</div><div style="font-size:13px;opacity:.55;margin-top:6px;">Calm your nervous system</div></div>
+
+          <!-- breathing circle -->
+          <div style="margin-top:40px;position:relative;height:240px;display:grid;place-items:center;">
+            <div style="position:absolute;width:230px;height:230px;border-radius:999px;background:radial-gradient(circle,rgba(124,92,255,.35),transparent 70%);filter:blur(10px);"></div>
+            <div style="position:absolute;width:200px;height:200px;border-radius:999px;border:1px solid rgba(180,160,255,.25);"></div>
+            <div style="position:absolute;width:150px;height:150px;border-radius:999px;border:1px solid rgba(180,160,255,.35);"></div>
+            <div style="width:120px;height:120px;border-radius:999px;background:linear-gradient(135deg,#7c5cff,#a78bfa);display:grid;place-items:center;box-shadow:0 0 50px -6px rgba(124,92,255,.9);">
+              <div><div style="font-size:18px;font-weight:700;">Breathe in</div><div class="num" style="font-size:13px;opacity:.8;margin-top:2px;">4s</div></div>
+            </div>
+          </div>
+
+          <!-- progress -->
+          <div class="pad" style="margin-top:36px;"><div class="row between" style="font-size:12px;opacity:.6;margin-bottom:8px;"><span class="num">02:14</span><span class="num">05:00</span></div>
+          <div style="height:4px;border-radius:999px;background:rgba(255,255,255,.12);"><div style="width:44%;height:100%;border-radius:999px;background:#b4a0ff;"></div></div></div>
+
+          <!-- controls -->
+          <div class="pad row" style="justify-content:center;gap:34px;margin-top:28px;align-items:center;">
+            <span style="font-size:22px;opacity:.7;">↺</span>
+            <div style="width:64px;height:64px;border-radius:999px;background:#fff;color:#5b3fbf;display:grid;place-items:center;font-size:22px;box-shadow:0 10px 26px -8px rgba(124,92,255,.8);">⏸</div>
+            <span style="font-size:22px;opacity:.7;">♪</span>
+          </div>
+        </div>
+      </div></div>
+      <div class="phone-label"><span class="num">4.3</span>Breathing player</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     APP 5 — SPROUT · EDUCATION / LEARNING
+     Playful, bright, character-driven. Emotional feedback loops (Duolingo).
+     ============================================================ -->
+<section class="app-section">
+  <div class="app-head">
+    <div class="app-badge" style="background:linear-gradient(150deg,#22c55e,#15803d);">🌱</div>
+    <div>
+      <h2>Sprout</h2>
+      <div class="tag">EDUCATION · LANGUAGE — playful, character-driven</div>
+    </div>
+  </div>
+  <p class="app-desc">Bright, playful palette with a friendly mascot and <b>emotional feedback loops</b> — a correct answer cheers, a streak celebration feels proportional to the effort. Built on the Duolingo lesson: <b>personality and reward turn a chore into a habit</b>.</p>
+
+  <div class="phone-row">
+
+    <!-- 5.1 Lesson path -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" style="background:#f0fdf4;color:#14321d;">
+        <div class="statusbar" style="color:#14321d;"><span class="num">9:41</span><span class="dots">📶 🔋</span></div>
+        <div class="scr-body">
+          <!-- top stat bar -->
+          <div class="pad row between" style="margin-top:6px;">
+            <span class="pill" style="background:#fef9c3;color:#a16207;">🔥 12</span>
+            <span class="pill" style="background:#dbeafe;color:#1d4ed8;">💎 540</span>
+            <span class="pill" style="background:#fee2e2;color:#dc2626;">❤️ 5</span>
+          </div>
+
+          <!-- unit banner -->
+          <div class="pad" style="margin-top:14px;"><div class="row between" style="background:#22c55e;border-radius:18px;padding:16px 18px;color:#fff;box-shadow:0 12px 24px -14px rgba(34,197,94,.9);">
+            <div><div style="font-size:11px;opacity:.85;font-weight:600;">UNIT 2 · SECTION 1</div><div style="font-size:16px;font-weight:800;margin-top:2px;">Order food &amp; drinks</div></div>
+            <span style="font-size:22px;">📖</span>
+          </div></div>
+
+          <!-- path nodes -->
+          <div style="margin-top:30px;display:flex;flex-direction:column;align-items:center;gap:22px;">
+            <div style="text-align:center;"><div style="width:66px;height:66px;border-radius:999px;background:#facc15;display:grid;place-items:center;font-size:28px;box-shadow:0 6px 0 #ca9a04;">⭐</div><div style="font-size:11px;font-weight:700;margin-top:6px;color:#a16207;">DONE</div></div>
+            <div style="margin-left:-70px;"><div style="width:66px;height:66px;border-radius:999px;background:#facc15;display:grid;place-items:center;font-size:28px;box-shadow:0 6px 0 #ca9a04;">✓</div></div>
+            <div style="text-align:center;position:relative;"><div style="position:absolute;inset:-8px;border-radius:999px;border:3px dashed #22c55e;animation:none;"></div><div style="width:72px;height:72px;border-radius:999px;background:#22c55e;display:grid;place-items:center;font-size:30px;box-shadow:0 6px 0 #15803d;color:#fff;">▶</div><div class="pill" style="background:#22c55e;color:#fff;margin-top:8px;">START</div></div>
+            <div style="margin-left:70px;"><div style="width:66px;height:66px;border-radius:999px;background:#e2e8f0;display:grid;place-items:center;font-size:26px;box-shadow:0 6px 0 #cbd5e1;opacity:.7;">🔒</div></div>
+            <div><div style="width:66px;height:66px;border-radius:999px;background:#e2e8f0;display:grid;place-items:center;font-size:26px;box-shadow:0 6px 0 #cbd5e1;opacity:.7;">🎁</div></div>
+          </div>
+        </div>
+        <div class="nav" style="background:#fff;border-top:1px solid #dcfce7;">
+          <div class="ni on" style="color:#16a34a;"><span style="font-size:20px;">🏠</span>Learn</div>
+          <div class="ni"><span style="font-size:20px;">🎯</span>Quests</div>
+          <div class="ni"><span style="font-size:20px;">🏆</span>League</div>
+          <div class="ni"><span style="font-size:20px;">👤</span>Profile</div>
+        </div>
+      </div></div>
+      <div class="phone-label"><span class="num">5.1</span>Lesson path</div>
+    </div>
+
+    <!-- 5.2 Quiz question -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" style="background:#ffffff;color:#14321d;">
+        <div class="statusbar" style="color:#14321d;"><span class="num">9:41</span><span class="dots">📶 🔋</span></div>
+        <div class="scr-body">
+          <!-- progress + hearts -->
+          <div class="pad row" style="gap:12px;margin-top:6px;">
+            <span style="font-size:20px;">✕</span>
+            <div class="grow" style="height:14px;border-radius:999px;background:#e2e8f0;"><div style="width:55%;height:100%;border-radius:999px;background:#22c55e;"></div></div>
+            <span class="pill" style="background:#fee2e2;color:#dc2626;padding:6px 10px;">❤️ 5</span>
+          </div>
+
+          <div class="pad" style="margin-top:24px;"><div style="font-size:13px;color:#64748b;font-weight:700;letter-spacing:.04em;">SELECT THE CORRECT TRANSLATION</div>
+          <div style="font-size:24px;font-weight:800;margin-top:10px;line-height:1.3;">"I would like a coffee, please"</div></div>
+
+          <!-- mascot bubble -->
+          <div class="pad row" style="gap:12px;margin-top:22px;align-items:flex-end;">
+            <div style="font-size:48px;">🦉</div>
+            <div style="background:#f1f5f9;border-radius:16px;border-bottom-left-radius:4px;padding:12px 16px;font-size:14px;font-style:italic;color:#475569;">You've got this!</div>
+          </div>
+
+          <!-- options -->
+          <div class="pad" style="margin-top:24px;display:flex;flex-direction:column;gap:12px;">
+            <div style="border:2px solid #e2e8f0;border-bottom-width:4px;border-radius:16px;padding:16px;font-size:15px;font-weight:600;">Quería un té, por favor</div>
+            <div style="border:2px solid #22c55e;border-bottom-width:4px;border-radius:16px;padding:16px;font-size:15px;font-weight:700;background:#f0fdf4;color:#15803d;">Quería un café, por favor</div>
+            <div style="border:2px solid #e2e8f0;border-bottom-width:4px;border-radius:16px;padding:16px;font-size:15px;font-weight:600;">Quería una cerveza, gracias</div>
+          </div>
+
+          <div class="pad" style="margin-top:auto;padding-bottom:22px;"><button class="cta" style="background:#22c55e;color:#fff;box-shadow:0 4px 0 #15803d;">Check</button></div>
+        </div>
+      </div></div>
+      <div class="phone-label"><span class="num">5.2</span>Quiz</div>
+    </div>
+
+    <!-- 5.3 Correct feedback (emotional loop) -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" style="background:#ffffff;color:#14321d;">
+        <div class="statusbar" style="color:#14321d;"><span class="num">9:41</span><span class="dots">📶 🔋</span></div>
+        <div class="scr-body">
+          <div class="pad row" style="gap:12px;margin-top:6px;">
+            <span style="font-size:20px;">✕</span>
+            <div class="grow" style="height:14px;border-radius:999px;background:#e2e8f0;"><div style="width:62%;height:100%;border-radius:999px;background:#22c55e;"></div></div>
+            <span class="pill" style="background:#fee2e2;color:#dc2626;padding:6px 10px;">❤️ 5</span>
+          </div>
+
+          <div class="pad" style="margin-top:24px;"><div style="font-size:13px;color:#64748b;font-weight:700;letter-spacing:.04em;">SELECT THE CORRECT TRANSLATION</div>
+          <div style="font-size:24px;font-weight:800;margin-top:10px;line-height:1.3;">"I would like a coffee, please"</div></div>
+
+          <div class="pad" style="margin-top:24px;display:flex;flex-direction:column;gap:12px;">
+            <div style="border:2px solid #e2e8f0;border-bottom-width:4px;border-radius:16px;padding:16px;font-size:15px;font-weight:600;opacity:.5;">Quería un té, por favor</div>
+            <div style="border:2px solid #22c55e;border-bottom-width:4px;border-radius:16px;padding:16px;font-size:15px;font-weight:700;background:#dcfce7;color:#15803d;">Quería un café, por favor ✓</div>
+          </div>
+
+          <!-- celebratory toast (peak-end micro) -->
+          <div style="margin-top:auto;background:#dcfce7;border-top-left-radius:24px;border-top-right-radius:24px;padding:24px 22px 22px;">
+            <div class="row between"><div class="row" style="gap:12px;"><div style="width:52px;height:52px;border-radius:999px;background:#22c55e;display:grid;place-items:center;font-size:26px;">🎉</div><div><div style="font-size:18px;font-weight:800;color:#15803d;">¡Excelente!</div><div style="font-size:13px;color:#16a34a;font-weight:600;">+15 XP · Nice accent!</div></div></div><div style="font-size:34px;">🦉</div></div>
+            <button class="cta" style="background:#22c55e;color:#fff;box-shadow:0 4px 0 #15803d;margin-top:18px;">Continue</button>
+          </div>
+        </div>
+      </div></div>
+      <div class="phone-label"><span class="num">5.3</span>Correct · feedback loop</div>
+    </div>
+
+    <!-- 5.4 Streak celebration (peak) -->
+    <div class="phone-wrap">
+      <div class="phone"><div class="screen" style="background:linear-gradient(180deg,#f59e0b 0%,#ea580c 100%);color:#fff;">
+        <div class="statusbar" style="color:#fff;"><span class="num">9:41</span><span class="dots">📶 🔋</span></div>
+        <div class="scr-body" style="text-align:center;">
+          <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">
+            <span style="position:absolute;top:10%;left:20%;font-size:16px;">✨</span><span style="position:absolute;top:18%;left:75%;font-size:14px;">⭐</span><span style="position:absolute;top:34%;left:12%;font-size:13px;">✨</span><span style="position:absolute;top:28%;left:84%;font-size:15px;">💫</span>
+          </div>
+
+          <div style="margin-top:54px;"><div style="font-size:90px;line-height:1;filter:drop-shadow(0 10px 18px rgba(0,0,0,.25));">🔥</div>
+          <div class="num" style="font-size:72px;font-weight:800;margin-top:6px;letter-spacing:-.04em;">12</div>
+          <div style="font-size:18px;font-weight:800;letter-spacing:.06em;opacity:.95;">DAY STREAK!</div></div>
+
+          <div style="font-size:15px;opacity:.9;margin-top:18px;max-width:250px;margin-left:auto;margin-right:auto;line-height:1.5;">You've practiced 12 days straight. You're unstoppable, Maya! 🚀</div>
+
+          <!-- week dots -->
+          <div class="pad row" style="justify-content:center;gap:10px;margin-top:30px;">
+            <div style="text-align:center;"><div style="width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.9);color:#ea580c;display:grid;place-items:center;font-weight:800;">✓</div><div style="font-size:10px;margin-top:5px;opacity:.8;">M</div></div>
+            <div style="text-align:center;"><div style="width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.9);color:#ea580c;display:grid;place-items:center;font-weight:800;">✓</div><div style="font-size:10px;margin-top:5px;opacity:.8;">T</div></div>
+            <div style="text-align:center;"><div style="width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.9);color:#ea580c;display:grid;place-items:center;font-weight:800;">✓</div><div style="font-size:10px;margin-top:5px;opacity:.8;">W</div></div>
+            <div style="text-align:center;"><div style="width:34px;height:34px;border-radius:999px;background:#fff;color:#ea580c;display:grid;place-items:center;font-weight:800;box-shadow:0 0 0 4px rgba(255,255,255,.35);">🔥</div><div style="font-size:10px;margin-top:5px;font-weight:700;">T</div></div>
+            <div style="text-align:center;"><div style="width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.25);display:grid;place-items:center;">·</div><div style="font-size:10px;margin-top:5px;opacity:.6;">F</div></div>
+            <div style="text-align:center;"><div style="width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.25);display:grid;place-items:center;">·</div><div style="font-size:10px;margin-top:5px;opacity:.6;">S</div></div>
+            <div style="text-align:center;"><div style="width:34px;height:34px;border-radius:999px;background:rgba(255,255,255,.25);display:grid;place-items:center;">·</div><div style="font-size:10px;margin-top:5px;opacity:.6;">S</div></div>
+          </div>
+
+          <div class="pad" style="margin-top:auto;padding-bottom:22px;width:100%;"><button class="cta" style="background:#fff;color:#ea580c;">Keep it going →</button></div>
+        </div>
+      </div></div>
+      <div class="phone-label"><span class="num">5.4</span>Streak · PEAK</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================ FOOTER ============================ -->
+<footer style="max-width:1180px;margin:0 auto;padding:80px 24px 0;text-align:center;">
+  <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:48px;">
+    <div style="font-family:var(--display);font-size:24px;font-weight:700;margin-bottom:14px;">One skill, five worlds.</div>
+    <p style="font-size:15px;color:#9a9ab5;max-width:600px;margin:0 auto 28px;line-height:1.6;">Every screen above shares the same DNA — 8-point spacing, the 60/30/10 color rule, thumb-zone CTAs, monospace numerals, soft tinted shadows, and a deliberate peak-end moment — yet each app feels native to its industry. That's the test passed.</p>
+    <div class="legend" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;">
+      <span class="pill" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#c7c7de;">60 / 30 / 10 color</span>
+      <span class="pill" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#c7c7de;">8-pt grid</span>
+      <span class="pill" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#c7c7de;">Peak-end moments</span>
+      <span class="pill" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#c7c7de;">Thumb-zone CTAs</span>
+      <span class="pill" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#c7c7de;">18 screens · 5 industries</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
