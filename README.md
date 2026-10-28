@@ -52,6 +52,14 @@ Great mobile UI isn't about flashiness — it's about intentionality. Every pixe
 "Create an onboarding flow for a health app"
 ```
 
+## Shipping to the App Store or Google Play?
+
+The screens you design with this skill can become your store screenshots. [ASO Shots](https://github.com/ceorkm/aso-shots) turns them into a screenshot set that gets installs. It writes the headlines, offers 3 style directions, and exports every image at the sizes Apple and Google ask for.
+
+```bash
+npx skills add ceorkm/aso-shots
+```
+
 ## File Structure
 
 ```
